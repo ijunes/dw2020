@@ -1,6 +1,6 @@
 apply plugin: 'android-sdk-manager'
 apply plugin: 'android'
-
+apply plugin: 'spoon'
 def devBuildName = "dev"
 def releaseBuildName = "release"
 
@@ -24,6 +24,8 @@ android {
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"
+        testPackageName "net.darkwire.test"
+        testInstrumentationRunner "net.darkwire.test.util.Runner"
     }
     buildTypes {
         debug {
@@ -98,4 +100,11 @@ dependencies {
     compile 'com.jakewharton:butterknife:4.0.1'
     compile 'com.squareup.dagger:dagger:1.2.1'
     provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+}
+
+spoon {
+    debug = true
+    failOnFailure = false
+    adbTimeout = 10*70
+    failIfNoDeviceConnected = false
 }
