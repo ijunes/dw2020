@@ -5,9 +5,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
-        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.9.+'
-        classpath 'de.felixschulze.gradle:gradle-spoon-plugin:1.2+'
+        classpath "com.android.tools.build:gradle:1.0.1"
+        classpath "com.jakewharton.sdkmanager:gradle-plugin:0.9.+"
     }
 }
 

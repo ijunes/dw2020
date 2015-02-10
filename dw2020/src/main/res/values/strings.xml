@@ -14,4 +14,8 @@
     <!-- Accessibility -->
     <string name="accessibility_image">image</string>
 
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_local_broadcast">LocalBroadcastActivity</string>
+
 </resources>

@@ -1,6 +1,8 @@
 apply plugin: 'android-sdk-manager'
-apply plugin: 'android'
-apply plugin: 'spoon'
+apply plugin: 'com.android.application'
+//apply plugin: 'spoon'
+apply plugin: 'robolectric'
+
 def devBuildName = "dev"
 def releaseBuildName = "release"
 
@@ -16,21 +18,23 @@ println devBuildName + " files at :" + devRootSrc
 println releaseBuildName + " files at :" + releaseRootSrc
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.0.3'
+    compileSdkVersion 21
+    buildToolsVersion '21.1.1'
 
     defaultConfig {
-        minSdkVersion 11
-        targetSdkVersion 19
+        minSdkVersion 15
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
-        testPackageName "net.darkwire.test"
+        testApplicationId "net.darkwire.test"
         testInstrumentationRunner "net.darkwire.test.util.Runner"
     }
     buildTypes {
         debug {
             packageNameSuffix "."+devBuildName
             versionNameSuffix "-"+devBuildName.toUpperCase()
+            debuggable true
+            testCoverageEnabled true
         }
         release {
             zipAlign true
@@ -49,8 +53,14 @@ android {
             res.srcDirs = [releaseRootSrc + resPath]
             assets.srcDirs = [devRootSrc + assetsPath]
         }
+        androidTest.setRoot('src/test')
     }
-
+    lintOptions {
+        abortOnError false
+        disable 'InvalidPackage'
+    }
+    productFlavors {
+    }
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
@@ -58,6 +68,41 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/DEPENDENCIES'
     }
+}
+
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+}
+
+def coverageSourceDirs = [
+        '../dw2020/src/main/java'
+]
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
+    group = "Reporting"
+
+    description = "Generate Jacoco coverage reports"
+
+    classDirectories = fileTree(
+            dir: '../dw2020/build/intermediates/classes/debug',
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
+    )
+
+    additionalSourceDirs = files(coverageSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files('../dw2020/build/outputs/code-coverage/coverage.ec')
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
 }
 
 dependencies {
@@ -100,11 +145,22 @@ dependencies {
     compile 'com.jakewharton:butterknife:4.0.1'
     compile 'com.squareup.dagger:dagger:1.2.1'
     provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+
+    // ================== LIBRARIES ======================
+    compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    // ================== TESTING LIBRARIES ======================
+    androidTestCompile 'junit:junit:4.10'
+    androidTestCompile 'org.robolectric:robolectric:2.3'
+    androidTestCompile 'org.bouncycastle:bcprov-jdk15on:1.50'
+    androidTestCompile 'com.jakewharton:butterknife:5.1.0'
 }
 
-spoon {
-    debug = true
-    failOnFailure = false
-    adbTimeout = 10*70
-    failIfNoDeviceConnected = false
+robolectric {
+    // configure the set of classes for JUnit tests
+    include '**/*Test.class'
+    //exclude '**/espresso/**/*.class'
+
+    // configure max heap size of the test JVM
+    maxHeapSize = "2048m"
 }
+
