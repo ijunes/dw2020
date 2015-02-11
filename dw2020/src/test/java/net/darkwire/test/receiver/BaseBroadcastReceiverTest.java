@@ -16,15 +16,15 @@ import org.robolectric.shadows.ShadowLog;
 
 import java.util.List;
 
-import be.acuzio.mrta.receiver.MyBroadcastReceiver;
-import be.acuzio.mrta.service.MyBroadcastIntentService;
+import net.darkwire.example.receiver.BaseBroadcastReceiver;
+import net.darkwire.example.service.BaseBroadcastIntentService;
 
 /**
  * Created by ijunes on 02/05/2015.
  */
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class MyBroadcastReceiverTest {
+public class BaseBroadcastReceiverTest {
     static {
         // redirect the Log.x output to stdout. Stdout will be recorded in the test result report
         ShadowLog.stream = System.out;
@@ -48,7 +48,7 @@ public class MyBroadcastReceiverTest {
         boolean receiverFound = false;
         for (ShadowApplication.Wrapper wrapper : registeredReceivers) {
             if (!receiverFound)
-                receiverFound = MyBroadcastReceiver.class.getSimpleName().equals(wrapper.broadcastReceiver.getClass().getSimpleName());
+                receiverFound = BaseBroadcastReceiver.class.getSimpleName().equals(wrapper.broadcastReceiver.getClass().getSimpleName());
         }
 
         Assert.assertTrue(receiverFound); //will be false if the container did not register the broadcast receiver we want to test
@@ -83,14 +83,14 @@ public class MyBroadcastReceiverTest {
          * TEST 3
          * ----------
          * Fetch the Broadcast receiver and cast it to the correct class.
-         * Next call the "onReceive" method and check if the MyBroadcastIntentService was started
+         * Next call the "onReceive" method and check if the BaseBroadcastIntentService was started
          */
-        MyBroadcastReceiver receiver = (MyBroadcastReceiver) receiversForIntent.get(0);
+        BaseBroadcastReceiver receiver = (BaseBroadcastReceiver) receiversForIntent.get(0);
         receiver.onReceive(Robolectric.getShadowApplication().getApplicationContext(), intent);
 
         Intent serviceIntent = Robolectric.getShadowApplication().peekNextStartedService();
-        Assert.assertEquals("Expected the MyBroadcast service to be invoked",
-                MyBroadcastIntentService.class.getCanonicalName(),
+        Assert.assertEquals("Expected the BaseBroadcast service to be invoked",
+                BaseBroadcastIntentService.class.getCanonicalName(),
                 serviceIntent.getComponent().getClassName());
 
     }

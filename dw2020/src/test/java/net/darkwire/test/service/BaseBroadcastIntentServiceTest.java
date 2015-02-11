@@ -18,14 +18,14 @@ import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowNotification;
 import org.robolectric.shadows.ShadowNotificationManager;
 
-import be.acuzio.mrta.service.MyBroadcastIntentService;
+import net.darkwire.example.service.BaseBroadcastIntentService;
 
 /**
  * Created by ijunes on 02/05/2015.
  */
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class MyBroadcastIntentServiceTest {
+public class BaseBroadcastIntentServiceTest {
     static {
         ShadowLog.stream = System.out;
     }
@@ -35,11 +35,11 @@ public class MyBroadcastIntentServiceTest {
 
     @Test
     public void testNoBundleExtrasFound() {
-        Intent serviceIntent = new Intent(Robolectric.application, MyBroadcastIntentServiceMock.class);
+        Intent serviceIntent = new Intent(Robolectric.application, BaseBroadcastIntentServiceMock.class);
         NotificationManager notificationManager = (NotificationManager) Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE);
 
         //Robolectric.getShadowApplication().startService(serviceIntent);
-        MyBroadcastIntentServiceMock service = new MyBroadcastIntentServiceMock();
+        BaseBroadcastIntentServiceMock service = new BaseBroadcastIntentServiceMock();
         service.onCreate();
         service.onHandleIntent(serviceIntent);
 
@@ -48,7 +48,7 @@ public class MyBroadcastIntentServiceTest {
 
    // @Test
     public void testWithBundleExtrasFound() {
-        Intent serviceIntent = new Intent(Robolectric.application, MyBroadcastIntentServiceMock.class);
+        Intent serviceIntent = new Intent(Robolectric.application, BaseBroadcastIntentServiceMock.class);
         Bundle bundle = new Bundle();
         bundle.putString("ACTION", "eat an apple");
         serviceIntent.putExtras(bundle);
@@ -56,7 +56,7 @@ public class MyBroadcastIntentServiceTest {
         NotificationManager notificationManager = (NotificationManager) Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE);
 
         //Robolectric.getShadowApplication().startService(serviceIntent);
-        MyBroadcastIntentServiceMock service = new MyBroadcastIntentServiceMock();
+        BaseBroadcastIntentServiceMock service = new BaseBroadcastIntentServiceMock();
         service.onCreate();
         service.onHandleIntent(serviceIntent);
 
@@ -64,7 +64,7 @@ public class MyBroadcastIntentServiceTest {
         ShadowNotificationManager manager = Robolectric.shadowOf(notificationManager);
         Assert.assertEquals("Expected one notification", 1, manager.size());
 
-        Notification notification = manager.getNotification(MyBroadcastIntentService.NOTIFICATION_TAG, MyBroadcastIntentService.NOTIFICATION_ID);
+        Notification notification = manager.getNotification(BaseBroadcastIntentService.NOTIFICATION_TAG, BaseBroadcastIntentService.NOTIFICATION_ID);
         Assert.assertNotNull("Expected notification object", notification);
 
         ShadowNotification shadowNotification = Robolectric.shadowOf(notification);
@@ -74,7 +74,7 @@ public class MyBroadcastIntentServiceTest {
         Assert.assertEquals("You are going to eat an apple", shadowNotification.getLatestEventInfo().getContentText());
     }
 
-    class MyBroadcastIntentServiceMock extends MyBroadcastIntentService {
+    class BaseBroadcastIntentServiceMock extends BaseBroadcastIntentService {
         @Override
         public void onHandleIntent(Intent intent) {
             super.onHandleIntent(intent);

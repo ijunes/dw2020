@@ -15,14 +15,14 @@ import net.darkwire.example.R;
 /**
  * Created by ijunes on 02/05/2015.
  */
-public class MyBroadcastIntentService extends IntentService {
-    private final static String TAG = MyBroadcastIntentService.class.getSimpleName();
+public class BaseBroadcastIntentService extends IntentService {
+    private final static String TAG = BaseBroadcastIntentService.class.getSimpleName();
     public final static int NOTIFICATION_ID = 335446435;
     public final static String NOTIFICATION_TAG = "BNTAG_ACTION";
 
-    public MyBroadcastIntentService() {
-        super(MyBroadcastIntentService.class.getSimpleName());
-        Log.d(TAG, "Creating new instance of MyBroadcastIntentService");
+    public BaseBroadcastIntentService() {
+        super(BaseBroadcastIntentService.class.getSimpleName());
+        Log.d(TAG, "Creating new instance of BaseBroadcastIntentService");
     }
 
     @Override

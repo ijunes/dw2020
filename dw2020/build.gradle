@@ -1,7 +1,6 @@
 apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
 //apply plugin: 'spoon'
-apply plugin: 'robolectric'
 
 def devBuildName = "dev"
 def releaseBuildName = "release"
@@ -19,7 +18,7 @@ println releaseBuildName + " files at :" + releaseRootSrc
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    buildToolsVersion '21.1.2'
 
     defaultConfig {
         minSdkVersion 15
@@ -31,14 +30,13 @@ android {
     }
     buildTypes {
         debug {
-            packageNameSuffix "."+devBuildName
+            applicationIdSuffix "."+devBuildName
             versionNameSuffix "-"+devBuildName.toUpperCase()
             debuggable true
             testCoverageEnabled true
         }
         release {
-            zipAlign true
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -59,8 +57,6 @@ android {
         abortOnError false
         disable 'InvalidPackage'
     }
-    productFlavors {
-    }
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
@@ -80,7 +76,7 @@ def coverageSourceDirs = [
         '../dw2020/src/main/java'
 ]
 
-task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
+task jacocoTestReport(type: JacocoReport, dependsOn: "connectedCheck") {
     group = "Reporting"
 
     description = "Generate Jacoco coverage reports"
@@ -155,12 +151,4 @@ dependencies {
     androidTestCompile 'com.jakewharton:butterknife:5.1.0'
 }
 
-robolectric {
-    // configure the set of classes for JUnit tests
-    include '**/*Test.class'
-    //exclude '**/espresso/**/*.class'
-
-    // configure max heap size of the test JVM
-    maxHeapSize = "2048m"
-}
 
